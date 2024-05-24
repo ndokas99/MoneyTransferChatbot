@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/brands.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/solid.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Whatsapp Chatbot</title>
+</head>
+<body>
+  <div class="background-green"></div>
+
+  <div class="main-container">
+    <div class="left-container">
+
+
+<!--header -->
+      <div class="header">
+        <div class="user-img">
+          <img class="dp" src="{{ url_for('static', filename='images/dp.png') }}" alt="">
+        </div>
+        <div class="nav-icons">
+          <li><i class="fa-solid fa-users"></i></li>
+          <li><i class="fa-solid fa-message">
+ </i></li>
+          <li><i class="fa-solid fa-ellipsis-vertical"></i></li>
+        </div>
+      </div>
+
+
+<!--search-container-->
+      <div class="search-container">
+        <div class="input">
+<i class="fa-solid fa-magnifying-glass"></i>
+            <label>
+                <input type="text" placeholder="Search or start new chat   ">
+            </label>
+        </div>
+     <i class="fa-sharp fa-solid fa-bars-filter"></i>
+      </div>
+
+
+<!--chats-->
+      <div class="chat-list">
+        <div class="chat-box active">
+          <div class="img-box">
+            <img class="dp" src="{{ url_for('static', filename='images/dp3.jpg') }}" alt="">
+          </div>
+          <div class="chat-details">
+            <div class="text-head">
+              <h4>Chatbot</h4>
+              <p class="time">07:49</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-box">
+          <div class="img-box">
+            <img class="dp" src="{{ url_for('static', filename='images/dp2.jpg') }}" alt="">
+          </div>
+          <div class="chat-details">
+            <div class="text-head">
+              <h4>Kudakwashe</h4>
+              <p class="time unread">06:49</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="right-container">
+<!--header -->
+      <div class="header">
+        <div class="img-text">
+          <div class="user-img">
+            <img class="dp" src="{{ url_for('static', filename='images/dp3.jpg') }}" alt="">
+          </div>
+          <h4>Chatbot<br><span>Online</span></h4>
+        </div>
+        <div class="nav-icons">
+          <li><i class="fa-solid fa-magnifying-glass"></i></li>
+          <li><i class="fa-solid fa-ellipsis-vertical"></i></li>
+        </div>
+      </div>
+
+<!--chat-container-->
+      <div id="chats" class="chat-container"></div>
+
+<!--input-bottom-->
+      <div class="chatbox-input">
+        <i class="fa-regular fa-face-grin"></i>
+        <i class="fa-sharp fa-solid fa-paperclip"></i>
+        <input id="resp" type="text" placeholder="Type a message">
+        <i onclick="send_text()" class="fa-solid fa-paper-plane fa-beat"></i>
+      </div>
+    </div>
+
+  </div>
+  <script>
+      function display_received(data){
+          const text = data["answer"];
+          const time = new Date();
+          const current_time = time.getHours() + ":" + time.getMinutes();
+          const content = `<div class="message-box friend-message"><p>${text}<br><span>${current_time}</span></p></div>`;
+          $("#chats").append(content);
+      }
+      function display_send(text){
+          const time = new Date();
+          const current_time = time.getHours() + ":" + time.getMinutes();
+          const content = `<div class="message-box my-message"><p>${text}<br><span>${current_time}</span></p></div>`;
+          $("#chats").append(content);
+          $('#resp').val("");
+      }
+      function send_text(){
+          let sent_text = $('#resp').val();
+          display_send(sent_text);
+          fetch('/query', {
+              method: "POST",
+              credentials: "include",
+              body: JSON.stringify({resp: sent_text}),
+              cache: "no-cache",
+              headers: new Headers({
+                  'content-type': "application/json"
+              })
+          }).then(response=> response.json()).then(data => display_received(data));
+      }
+  </script>
+  <script src="{{ url_for('static', filename='js/jquery-3.5.1.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/http_kit.fontawesome.com_391827d54c.js') }}" crossorigin="anonymous"></script>
+</body>
+</html>
